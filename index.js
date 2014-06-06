@@ -1,8 +1,9 @@
 var request = require('request');
 var fs = require("fs");
+var path = require("path");
 
 var URL = "https://api.chain.com";
-var PEM = fs.readFileSync("./chain.pem");
+var PEM = fs.readFileSync(path.join(__dirname, "./chain.pem"));
 var KEY = "GUEST-TOKEN";
 var OPT = {
   host: URL,
