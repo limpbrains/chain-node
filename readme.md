@@ -12,7 +12,6 @@ $ npm install chain-node
 
 ```js
 var chain = require('chain-node');
-chain.KEY = 'GUEST-TOKEN';
 chain.getAddress('17x23dNjXJLzGMev6R63uyRhMWP1VHawKc', function(err, resp) {
   console.log('balance='+resp['balance']);
 });
