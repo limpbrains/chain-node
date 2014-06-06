@@ -24,7 +24,7 @@ module.exports = {
     });
   },
 
-  sendTransaction: function(txnHex) {
+  sendTransaction: function(txnHex, cb) {
     request({
       method: 'PUT',
       uri: OPT.host + '/v1/bitcoin/transactions/',
@@ -37,7 +37,7 @@ module.exports = {
     });
   },
 
-  getUnspentOutputs: function(addr) {
+  getUnspentOutputs: function(addr, cb) {
     request({
       method: 'GET',
       uri: OPT.host + '/v1/bitcoin/addresses/' + addr + '/unspents',
