@@ -1,0 +1,29 @@
+{
+  "name": "chain-node",
+  "version": "0.0.1",
+  "description": "The Official Node.js SDK for Chain's Bitcoin API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:chain-engineering/chain-node.git"
+  },
+  "keywords": [
+    "chain",
+    "bitcoin"
+  ],
+  "author": "Ryan R. Smith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chain-engineering/chain-node/issues"
+  },
+  "homepage": "https://github.com/chain-engineering/chain-node",
+  "dependencies": {
+    "request": "2.36.0"
+  },
+  "files": [
+    "chain.pem"
+  ]
+}
