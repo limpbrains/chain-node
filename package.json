@@ -24,6 +24,7 @@
     "request": "2.36.0"
   },
   "files": [
+    "index.js",
     "chain.pem"
   ]
 }
