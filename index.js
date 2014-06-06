@@ -6,11 +6,9 @@ var URL = "https://api.chain.com";
 var PEM = fs.readFileSync(path.join(__dirname, "./chain.pem"));
 
 module.exports = {
-
   getKey: function() {
     return this.key || 'GUEST-TOKEN';
   },
-
   getAddress: function(addr, cb) {
     console.log(this.getKey());
     request({
@@ -20,7 +18,7 @@ module.exports = {
       cert: PEM,
       auth: {user: this.getKey()},
     }, function(err, msg, resp) {
-      cb(err, resp);
+      cb(err, JSON.parse(resp));
     });
   },
 
@@ -45,7 +43,7 @@ module.exports = {
       cert: PEM,
       auth: {user: this.getKey()},
     }, function(err, msg, resp) {
-      cb(err, resp);
+      cb(err, JSON.parse(resp));
     });
   }
 };
