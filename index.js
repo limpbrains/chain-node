@@ -22,14 +22,14 @@ module.exports = {
     });
   },
 
-  sendTransaction: function(txnHex, cb) {
+  sendTransaction: function(hex, cb) {
     request({
       method: 'PUT',
       uri: URL + '/v1/bitcoin/transactions/',
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
-      json: {hex: txnHex},
+      json: {hex: hex},
     }, function(err, msg, resp) {
       cb(err, resp);
     });
