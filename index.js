@@ -35,7 +35,7 @@ module.exports = {
     });
   },
 
-  getUnspentOutputs: function(addr, cb) {
+  getAddressUnspents: function(addr, cb) {
     request({
       method: 'GET',
       uri: URL + '/v1/bitcoin/addresses/' + addr + '/unspents',
