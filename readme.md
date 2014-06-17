@@ -17,6 +17,6 @@ chain.getAddress('17x23dNjXJLzGMev6R63uyRhMWP1VHawKc', function(err, resp) {
 });
 ```
 
-### Documentation
+## Documentation
 
 The Chain API Documentation is available at [https://chain.com/docs/node](https://chain.com/docs/node)
