@@ -21,7 +21,18 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-
+  getTransaction: function(hash, cb) {
+    console.log(this.getKey());
+    request({
+      method: 'GET',
+      uri: URL + '/v1/bitcoin/transactions/' + hash,
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
+  },
   sendTransaction: function(hex, cb) {
     request({
       method: 'PUT',
@@ -34,7 +45,6 @@ module.exports = {
       cb(err, resp);
     });
   },
-
   getAddressUnspents: function(addr, cb) {
     request({
       method: 'GET',
