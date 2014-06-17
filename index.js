@@ -10,7 +10,6 @@ module.exports = {
     return this.key || 'GUEST-TOKEN';
   },
   getAddress: function(addr, cb) {
-    console.log(this.getKey());
     request({
       method: 'GET',
       uri: URL + '/v1/bitcoin/addresses/' + addr,
@@ -22,7 +21,6 @@ module.exports = {
     });
   },
   getTransaction: function(hash, cb) {
-    console.log(this.getKey());
     request({
       method: 'GET',
       uri: URL + '/v1/bitcoin/transactions/' + hash,
