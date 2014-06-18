@@ -20,6 +20,28 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
+  getAddressTransactions: function(addr, cb) {
+    request({
+      method: 'GET',
+      uri: URL + '/v1/bitcoin/addresses/' + addr + '/transactions',
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
+  }
+  getAddressUnspents: function(addr, cb) {
+    request({
+      method: 'GET',
+      uri: URL + '/v1/bitcoin/addresses/' + addr + '/unspents',
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
+  }
   getTransaction: function(hash, cb) {
     request({
       method: 'GET',
@@ -43,15 +65,4 @@ module.exports = {
       cb(err, resp);
     });
   },
-  getAddressUnspents: function(addr, cb) {
-    request({
-      method: 'GET',
-      uri: URL + '/v1/bitcoin/addresses/' + addr + '/unspents',
-      strictSSL: true,
-      cert: PEM,
-      auth: {user: this.getKey()},
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  }
 };
