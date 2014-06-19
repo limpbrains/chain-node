@@ -22,6 +22,10 @@ module.exports = {
   },
   getAddressTransactions: function(addr, options, cb) {
     options = options || {};
+    if (typeof(options) == 'function') {
+        cb = options;
+        options = {};
+    }
     request({
       method: 'GET',
       uri: URL + '/v1/bitcoin/addresses/' + addr + '/transactions',
