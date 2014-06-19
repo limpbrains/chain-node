@@ -20,17 +20,19 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  getAddressTransactions: function(addr, cb) {
+  getAddressTransactions: function(addr, options, cb) {
+    options = options || {};
     request({
       method: 'GET',
       uri: URL + '/v1/bitcoin/addresses/' + addr + '/transactions',
+      qs: options,
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
-  }
+  },
   getAddressUnspents: function(addr, cb) {
     request({
       method: 'GET',
@@ -41,7 +43,7 @@ module.exports = {
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
-  }
+  },
   getTransaction: function(hash, cb) {
     request({
       method: 'GET',
@@ -64,5 +66,5 @@ module.exports = {
     }, function(err, msg, resp) {
       cb(err, resp);
     });
-  },
+  }
 };
