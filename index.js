@@ -82,10 +82,10 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  getBlockLast: function(hash, cb) {
+  getLatestBlock: function(cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/blocks/last',
+      uri: URL + '/v1/bitcoin/blocks/last/',
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
