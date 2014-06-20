@@ -9,10 +9,10 @@ module.exports = {
   getKey: function() {
     return this.key || 'GUEST-TOKEN';
   },
-  getAddress: function(addr, cb) {
+  getAddress: function(address, cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/addresses/' + addr,
+      uri: URL + '/v1/bitcoin/addresses/' + address,
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
@@ -20,7 +20,7 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  getAddressTransactions: function(addr, options, cb) {
+  getAddressTransactions: function(address, options, cb) {
     options = options || {};
     if (typeof(options) == 'function') {
         cb = options;
@@ -28,7 +28,7 @@ module.exports = {
     }
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/addresses/' + addr + '/transactions',
+      uri: URL + '/v1/bitcoin/addresses/' + address + '/transactions',
       qs: options,
       strictSSL: true,
       cert: PEM,
@@ -37,10 +37,10 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  getAddressUnspents: function(addr, cb) {
+  getAddressUnspents: function(address, cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/addresses/' + addr + '/unspents',
+      uri: URL + '/v1/bitcoin/addresses/' + address + '/unspents',
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
@@ -48,10 +48,10 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  getTransaction: function(hash, cb) {
+  getTransaction: function(hashOrHeight, cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/transactions/' + hash,
+      uri: URL + '/v1/bitcoin/transactions/' + hashOrHeight,
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
