@@ -62,7 +62,7 @@ module.exports = {
   sendTransaction: function(hex, cb) {
     request({
       method: 'PUT',
-      uri: URL + '/v1/bitcoin/transactions/',
+      uri: URL + '/v1/bitcoin/transactions',
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
