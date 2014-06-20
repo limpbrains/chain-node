@@ -85,7 +85,7 @@ module.exports = {
   getLatestBlock: function(cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/blocks/last/',
+      uri: URL + '/v1/bitcoin/blocks/latest/',
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
