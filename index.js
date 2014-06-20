@@ -81,5 +81,16 @@ module.exports = {
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
+  },
+  getBlockLast: function(hash, cb) {
+    request({
+      method: 'GET',
+      uri: URL + '/v1/bitcoin/blocks/last',
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
   }
 };
