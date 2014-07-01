@@ -48,10 +48,21 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  getTransaction: function(hashOrHeight, cb) {
+  getTransaction: function(hash, cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/transactions/' + hashOrHeight,
+      uri: URL + '/v1/bitcoin/transactions/' + hash,
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
+  },
+  getTransactionOpReturn: function(hash, cb) {
+    request({
+      method: 'GET',
+      uri: URL + '/v1/bitcoin/transactions/' + hash + '/op-return',
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
@@ -71,10 +82,10 @@ module.exports = {
       cb(err, resp);
     });
   },
-  getBlock: function(hash, cb) {
+  getBlock: function(hashOrHeight, cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/blocks/' + hash,
+      uri: URL + '/v1/bitcoin/blocks/' + hashOrHeight,
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
