@@ -20,3 +20,10 @@ chain.getAddress('17x23dNjXJLzGMev6R63uyRhMWP1VHawKc', function(err, resp) {
 ## Documentation
 
 The Chain API Documentation is available at [https://chain.com/docs/node](https://chain.com/docs/node)
+
+## Publishing Nodule Package
+
+```bash
+$ npm publish
+$ git push origin master --tags
+```
