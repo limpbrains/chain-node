@@ -1,6 +1,6 @@
 {
   "name": "chain-node",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "The Official Node.js SDK for Chain's Bitcoin API",
   "main": "index.js",
   "scripts": {
