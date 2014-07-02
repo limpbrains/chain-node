@@ -25,5 +25,6 @@ The Chain API Documentation is available at [https://chain.com/docs/node](https:
 
 ```bash
 $ npm publish
+$ git tag 0.0.X
 $ git push origin master --tags
 ```
