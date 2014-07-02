@@ -9,10 +9,19 @@ module.exports = {
   getKey: function() {
     return this.key || 'GUEST-TOKEN';
   },
+  getVersion: function() {
+    return this.version || 'v1';
+  },
+  getBlockChain: function() {
+    return this.blockChain || 'bitcoin';
+  },
+  getBaseURL: function() {
+    return URL + '/' + this.getVersion() + '/' + this.getBlockChain();
+  },
   getAddress: function(address, cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/addresses/' + address,
+      uri: this.getBaseURL() + '/addresses/' + address,
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
@@ -28,7 +37,7 @@ module.exports = {
     }
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/addresses/' + address + '/transactions',
+      uri: this.getBaseURL() + '/addresses/' + address + '/transactions',
       qs: options,
       strictSSL: true,
       cert: PEM,
@@ -40,7 +49,7 @@ module.exports = {
   getAddressUnspents: function(address, cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/addresses/' + address + '/unspents',
+      uri: this.getBaseURL() + '/addresses/' + address + '/unspents',
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
@@ -51,7 +60,7 @@ module.exports = {
   getTransaction: function(hash, cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/transactions/' + hash,
+      uri: this.getBaseURL() + '/transactions/' + hash,
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
@@ -62,7 +71,7 @@ module.exports = {
   getTransactionOpReturn: function(hash, cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/transactions/' + hash + '/op-return',
+      uri: this.getBaseURL() + '/transactions/' + hash + '/op-return',
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
@@ -73,7 +82,7 @@ module.exports = {
   sendTransaction: function(hex, cb) {
     request({
       method: 'PUT',
-      uri: URL + '/v1/bitcoin/transactions',
+      uri: this.getBaseURL() + '/transactions',
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
@@ -85,7 +94,7 @@ module.exports = {
   getBlock: function(hashOrHeight, cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/blocks/' + hashOrHeight,
+      uri: this.getBaseURL() + '/blocks/' + hashOrHeight,
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
@@ -96,7 +105,7 @@ module.exports = {
   getLatestBlock: function(cb) {
     request({
       method: 'GET',
-      uri: URL + '/v1/bitcoin/blocks/latest',
+      uri: this.getBaseURL() + '/blocks/latest',
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
