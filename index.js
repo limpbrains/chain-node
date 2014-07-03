@@ -112,5 +112,16 @@ module.exports = {
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
+  },
+  getBlockOpReturns: function(hashOrHeight, cb) {
+    request({
+      method: 'GET',
+      uri: this.getBaseURL() + '/blocks/' + hashOrHeight + '/op-returns',
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
   }
 };
