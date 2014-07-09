@@ -57,6 +57,17 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
+  getAddressOpReturns: function(address, cb) {
+    request({
+      method: 'GET',
+      uri: this.getBaseURL() + '/addresses/' + address + '/op-returns',
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
+  },
   getTransaction: function(hash, cb) {
     request({
       method: 'GET',
