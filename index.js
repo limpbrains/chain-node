@@ -29,6 +29,9 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
+  getAddresses: function(addresses, cb) {
+    this.getAddress(addresses.join(','), cb);
+  },
   getAddressTransactions: function(address, options, cb) {
     options = options || {};
     if (typeof(options) == 'function') {
@@ -46,6 +49,9 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
+  getAddressesTransactions: function(addresses, options, cb) {
+    this.getAddressTransactions(addresses.join(','), options, cb);
+  },
   getAddressUnspents: function(address, cb) {
     request({
       method: 'GET',
@@ -56,6 +62,9 @@ module.exports = {
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
+  },
+  getAddressesUnspents: function(addresses, cb) {
+    this.getAddressUnspents(addresses.join(','), cb);
   },
   getAddressOpReturns: function(address, cb) {
     request({
