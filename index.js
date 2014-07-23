@@ -18,6 +18,9 @@ module.exports = {
   getBaseURL: function() {
     return URL + '/' + this.getVersion() + '/' + this.getBlockChain();
   },
+  getWebhooksURL: function() {
+    return URL + '/' + this.getVersion();
+  },
   getAddress: function(address, cb) {
     request({
       method: 'GET',
@@ -137,6 +140,107 @@ module.exports = {
     request({
       method: 'GET',
       uri: this.getBaseURL() + '/blocks/' + hashOrHeight + '/op-returns',
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
+  },
+  createWebhookUrl: function(url, alias, cb) {
+    var body = {};
+    body['url'] = url;
+    if(alias != null) {
+      body['alias'] = alias;
+    }
+    request({
+      method: 'POST',
+      uri: this.getWebhooksURL() + '/webhooks',
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+      json: body,
+    }, function(err, msg, resp) {
+      cb(err, resp);
+    });
+  },
+  listWebhookUrls: function(cb) {
+    request({
+      method: 'GET',
+      uri: this.getWebhooksURL() + '/webhooks',
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
+  },
+  updateWebhookUrl: function(identifier, url, cb) {
+    request({
+      method: 'PUT',
+      uri: this.getWebhooksURL() + '/webhooks/' + identifier,
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+      json: {url: url},
+    }, function(err, msg, resp) {
+      cb(err, resp);
+    });
+  },
+  deleteWebhookUrl: function(identifier, cb) {
+    request({
+      method: 'DELETE',
+      uri: this.getWebhooksURL() + '/webhooks/' + identifier,
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
+  },
+  createWebhookEvent: function(identifier, opts, cb) {
+    if(opts['event'] == null) {
+      opts['event'] = 'address-transaction';
+    }
+    if(opts['block_chain'] == null) {
+      opts['block_chain'] = this.getBlockChain();
+    }
+    if(opts['address'] == null) {
+      cb('Missing address parameter', null);
+    }
+    if(opts['confirmations'] == null) {
+      opts['confirmations']  = 1;
+    }
+    request({
+      method: 'POST',
+      uri: this.getWebhooksURL() + '/webhooks/' + identifier + '/events',
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+      json: opts
+    }, function(err, msg, resp) {
+      cb(err, resp);
+    });
+  },
+  listWebhookEvents: function(identifier, cb) {
+    request({
+      method: 'GET',
+      uri: this.getWebhooksURL() + '/webhooks/' + identifier + '/events',
+      strictSSL: true,
+      cert: PEM,
+      auth: {user: this.getKey()},
+    }, function(err, msg, resp) {
+      cb(err, JSON.parse(resp));
+    });
+  },
+  deleteWebhookEvent: function(identifier, eventType, address, cb) {
+    var url = this.getWebhooksURL();
+    url += '/webhooks/' + identifier;
+    url += '/events/' + eventType;
+    url += '/' + address;
+    request({
+      method: 'DELETE',
+      uri: url,
       strictSSL: true,
       cert: PEM,
       auth: {user: this.getKey()},
