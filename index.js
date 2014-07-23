@@ -9,6 +9,15 @@ module.exports = {
   getKey: function() {
     return this.key || 'GUEST-TOKEN';
   },
+  getApiKeyId: function() {
+    return this.apiKeyId || this.getKey();
+  },
+  getApiKeySecret: function() {
+    return this.apiKeySecret;
+  },
+  getAuth: function() {
+    return {user: this.getApiKeyId(), pass: this.getApiKeySecret()};
+  },
   getVersion: function() {
     return this.version || 'v1';
   },
@@ -27,7 +36,7 @@ module.exports = {
       uri: this.getBaseURL() + '/addresses/' + address,
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -47,7 +56,7 @@ module.exports = {
       qs: options,
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -61,7 +70,7 @@ module.exports = {
       uri: this.getBaseURL() + '/addresses/' + address + '/unspents',
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -75,7 +84,7 @@ module.exports = {
       uri: this.getBaseURL() + '/addresses/' + address + '/op-returns',
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -86,7 +95,7 @@ module.exports = {
       uri: this.getBaseURL() + '/transactions/' + hash,
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -97,7 +106,7 @@ module.exports = {
       uri: this.getBaseURL() + '/transactions/' + hash + '/op-return',
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -108,7 +117,7 @@ module.exports = {
       uri: this.getBaseURL() + '/transactions',
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
       json: {hex: hex},
     }, function(err, msg, resp) {
       cb(err, resp);
@@ -120,7 +129,7 @@ module.exports = {
       uri: this.getBaseURL() + '/blocks/' + hashOrHeight,
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -131,7 +140,7 @@ module.exports = {
       uri: this.getBaseURL() + '/blocks/latest',
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -142,7 +151,7 @@ module.exports = {
       uri: this.getBaseURL() + '/blocks/' + hashOrHeight + '/op-returns',
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -158,7 +167,7 @@ module.exports = {
       uri: this.getWebhooksURL() + '/webhooks',
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
       json: body,
     }, function(err, msg, resp) {
       cb(err, resp);
@@ -170,7 +179,7 @@ module.exports = {
       uri: this.getWebhooksURL() + '/webhooks',
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -181,7 +190,7 @@ module.exports = {
       uri: this.getWebhooksURL() + '/webhooks/' + identifier,
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
       json: {url: url},
     }, function(err, msg, resp) {
       cb(err, resp);
@@ -193,7 +202,7 @@ module.exports = {
       uri: this.getWebhooksURL() + '/webhooks/' + identifier,
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -216,7 +225,7 @@ module.exports = {
       uri: this.getWebhooksURL() + '/webhooks/' + identifier + '/events',
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
       json: opts
     }, function(err, msg, resp) {
       cb(err, resp);
@@ -228,7 +237,7 @@ module.exports = {
       uri: this.getWebhooksURL() + '/webhooks/' + identifier + '/events',
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
@@ -243,7 +252,7 @@ module.exports = {
       uri: url,
       strictSSL: true,
       cert: PEM,
-      auth: {user: this.getKey()},
+      auth: this.getAuth(),
     }, function(err, msg, resp) {
       cb(err, JSON.parse(resp));
     });
