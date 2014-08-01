@@ -156,11 +156,11 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  createWebhookUrl: function(url, alias, cb) {
+  createWebhookUrl: function(url, id, cb) {
     var body = {};
     body['url'] = url;
-    if(alias != null) {
-      body['alias'] = alias;
+    if(id != null) {
+      body['id'] = id;
     }
     request({
       method: 'POST',
@@ -184,10 +184,10 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  updateWebhookUrl: function(identifier, url, cb) {
+  updateWebhookUrl: function(id, url, cb) {
     request({
       method: 'PUT',
-      uri: this.getWebhooksURL() + '/webhooks/' + identifier,
+      uri: this.getWebhooksURL() + '/webhooks/' + id,
       strictSSL: true,
       cert: PEM,
       auth: this.getAuth(),
@@ -196,10 +196,10 @@ module.exports = {
       cb(err, resp);
     });
   },
-  deleteWebhookUrl: function(identifier, cb) {
+  deleteWebhookUrl: function(id, cb) {
     request({
       method: 'DELETE',
-      uri: this.getWebhooksURL() + '/webhooks/' + identifier,
+      uri: this.getWebhooksURL() + '/webhooks/' + id,
       strictSSL: true,
       cert: PEM,
       auth: this.getAuth(),
@@ -207,7 +207,7 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  createWebhookEvent: function(identifier, opts, cb) {
+  createWebhookEvent: function(webhookId, opts, cb) {
     if(opts['event'] == null) {
       opts['event'] = 'address-transaction';
     }
@@ -222,7 +222,7 @@ module.exports = {
     }
     request({
       method: 'POST',
-      uri: this.getWebhooksURL() + '/webhooks/' + identifier + '/events',
+      uri: this.getWebhooksURL() + '/webhooks/' + webhookId+ '/events',
       strictSSL: true,
       cert: PEM,
       auth: this.getAuth(),
@@ -231,10 +231,10 @@ module.exports = {
       cb(err, resp);
     });
   },
-  listWebhookEvents: function(identifier, cb) {
+  listWebhookEvents: function(webhookId, cb) {
     request({
       method: 'GET',
-      uri: this.getWebhooksURL() + '/webhooks/' + identifier + '/events',
+      uri: this.getWebhooksURL() + '/webhooks/' + webhookId + '/events',
       strictSSL: true,
       cert: PEM,
       auth: this.getAuth(),
@@ -242,9 +242,9 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  deleteWebhookEvent: function(identifier, eventType, address, cb) {
+  deleteWebhookEvent: function(webhookId, eventType, address, cb) {
     var url = this.getWebhooksURL();
-    url += '/webhooks/' + identifier;
+    url += '/webhooks/' + webhookId;
     url += '/events/' + eventType;
     url += '/' + address;
     request({
