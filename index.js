@@ -19,7 +19,7 @@ module.exports = {
     return {user: this.getApiKeyId(), pass: this.getApiKeySecret()};
   },
   getVersion: function() {
-    return this.version || 'v1';
+    return this.version || 'v2';
   },
   getBlockChain: function() {
     return this.blockChain || 'bitcoin';
@@ -27,8 +27,8 @@ module.exports = {
   getBaseURL: function() {
     return URL + '/' + this.getVersion() + '/' + this.getBlockChain();
   },
-  getWebhooksURL: function() {
-    return URL + '/' + this.getVersion();
+  getNotificationsURL: function() {
+    return URL + '/' + this.getVersion() + '/notifications';
   },
   getAddress: function(address, cb) {
     request({
@@ -156,27 +156,22 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  createWebhookUrl: function(url, id, cb) {
-    var body = {};
-    body['url'] = url;
-    if(id != null) {
-      body['id'] = id;
-    }
+  createNotification: function(args, cb) {
     request({
       method: 'POST',
-      uri: this.getWebhooksURL() + '/webhooks',
+      uri: this.getNotificationsURL(),
       strictSSL: true,
       cert: PEM,
       auth: this.getAuth(),
-      json: body,
+      json: args,
     }, function(err, msg, resp) {
       cb(err, resp);
     });
   },
-  listWebhookUrls: function(cb) {
+  listNotifications: function(cb) {
     request({
       method: 'GET',
-      uri: this.getWebhooksURL() + '/webhooks',
+      uri: this.getNotificationsURL(),
       strictSSL: true,
       cert: PEM,
       auth: this.getAuth(),
@@ -184,77 +179,15 @@ module.exports = {
       cb(err, JSON.parse(resp));
     });
   },
-  updateWebhookUrl: function(id, url, cb) {
-    request({
-      method: 'PUT',
-      uri: this.getWebhooksURL() + '/webhooks/' + id,
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-      json: {url: url},
-    }, function(err, msg, resp) {
-      cb(err, resp);
-    });
-  },
-  deleteWebhookUrl: function(id, cb) {
+  deleteNotification: function(id, cb) {
     request({
       method: 'DELETE',
-      uri: this.getWebhooksURL() + '/webhooks/' + id,
+      uri: this.getNotificationsURL() + '/' + id,
       strictSSL: true,
       cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  createWebhookEvent: function(webhookId, opts, cb) {
-    if(opts['event'] == null) {
-      opts['event'] = 'address-transaction';
-    }
-    if(opts['block_chain'] == null) {
-      opts['block_chain'] = this.getBlockChain();
-    }
-    if(opts['address'] == null) {
-      cb('Missing address parameter', null);
-    }
-    if(opts['confirmations'] == null) {
-      opts['confirmations']  = 1;
-    }
-    request({
-      method: 'POST',
-      uri: this.getWebhooksURL() + '/webhooks/' + webhookId+ '/events',
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-      json: opts
+      auth: this.getAuth()
     }, function(err, msg, resp) {
       cb(err, resp);
-    });
-  },
-  listWebhookEvents: function(webhookId, cb) {
-    request({
-      method: 'GET',
-      uri: this.getWebhooksURL() + '/webhooks/' + webhookId + '/events',
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  deleteWebhookEvent: function(webhookId, eventType, address, cb) {
-    var url = this.getWebhooksURL();
-    url += '/webhooks/' + webhookId;
-    url += '/events/' + eventType;
-    url += '/' + address;
-    request({
-      method: 'DELETE',
-      uri: url,
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
     });
   }
 };
