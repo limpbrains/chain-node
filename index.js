@@ -1,9 +1,9 @@
 var request = require('request');
-var fs = require("fs");
-var path = require("path");
+var fs = require('fs');
+var path = require('path');
 
-var URL = "https://api.chain.com";
-var PEM = fs.readFileSync(path.join(__dirname, "./chain.pem"));
+var URL = 'https://api.chain.com';
+var PEM = fs.readFileSync(path.join(__dirname, './chain.pem'));
 
 module.exports = {
   getKey: function() {
