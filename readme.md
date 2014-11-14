@@ -12,7 +12,11 @@ $ npm install chain-node
 
 ```js
 var Chain = require('chain-node');
-var chain = new Chain();
+var chain = new Chain({
+  keyId: 'your-key-id',
+  keySecret: 'your-key-secret',
+  blockChain: 'bitcoin'
+});
 
 chain.getAddress('17x23dNjXJLzGMev6R63uyRhMWP1VHawKc', function(err, resp) {
   console.log('balance='+resp['balance']);
