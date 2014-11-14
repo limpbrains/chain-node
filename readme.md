@@ -11,7 +11,9 @@ $ npm install chain-node
 ## Quick Start
 
 ```js
-var chain = require('chain-node');
+var Chain = require('chain-node');
+var chain = new Chain();
+
 chain.getAddress('17x23dNjXJLzGMev6R63uyRhMWP1VHawKc', function(err, resp) {
   console.log('balance='+resp['balance']);
 });

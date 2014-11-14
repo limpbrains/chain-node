@@ -1,193 +1,100 @@
-var request = require('request');
-var fs = require('fs');
-var path = require('path');
+var HttpUtility = require('./http-utility');
+var util = require('util');
 
-var URL = 'https://api.chain.com';
-var PEM = fs.readFileSync(path.join(__dirname, './chain.pem'));
+module.exports = Chain;
 
-module.exports = {
-  getKey: function() {
-    return this.key || 'GUEST-TOKEN';
-  },
-  getApiKeyId: function() {
-    return this.apiKeyId || this.getKey();
-  },
-  getApiKeySecret: function() {
-    return this.apiKeySecret;
-  },
-  getAuth: function() {
-    return {user: this.getApiKeyId(), pass: this.getApiKeySecret()};
-  },
-  getVersion: function() {
-    return this.version || 'v2';
-  },
-  getBlockChain: function() {
-    return this.blockChain || 'bitcoin';
-  },
-  getBaseURL: function() {
-    return URL + '/' + this.getVersion() + '/' + this.getBlockChain();
-  },
-  getNotificationsURL: function() {
-    return URL + '/' + this.getVersion() + '/notifications';
-  },
-  getAddress: function(address, cb) {
-    request({
-      method: 'GET',
-      uri: this.getBaseURL() + '/addresses/' + address,
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  getAddresses: function(addresses, cb) {
-    this.getAddress(addresses.join(','), cb);
-  },
-  getAddressTransactions: function(address, options, cb) {
-    options = options || {};
-    if (typeof(options) == 'function') {
-        cb = options;
-        options = {};
-    }
-    request({
-      method: 'GET',
-      uri: this.getBaseURL() + '/addresses/' + address + '/transactions',
-      qs: options,
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  getAddressesTransactions: function(addresses, options, cb) {
-    this.getAddressTransactions(addresses.join(','), options, cb);
-  },
-  getAddressUnspents: function(address, cb) {
-    request({
-      method: 'GET',
-      uri: this.getBaseURL() + '/addresses/' + address + '/unspents',
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  getAddressesUnspents: function(addresses, cb) {
-    this.getAddressUnspents(addresses.join(','), cb);
-  },
-  getAddressOpReturns: function(address, cb) {
-    request({
-      method: 'GET',
-      uri: this.getBaseURL() + '/addresses/' + address + '/op-returns',
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  getTransaction: function(hash, cb) {
-    request({
-      method: 'GET',
-      uri: this.getBaseURL() + '/transactions/' + hash,
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  getTransactionOpReturn: function(hash, cb) {
-    request({
-      method: 'GET',
-      uri: this.getBaseURL() + '/transactions/' + hash + '/op-return',
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  sendTransaction: function(hex, cb) {
-    request({
-      method: 'PUT',
-      uri: this.getBaseURL() + '/transactions',
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-      json: {hex: hex},
-    }, function(err, msg, resp) {
-      cb(err, resp);
-    });
-  },
-  getBlock: function(hashOrHeight, cb) {
-    request({
-      method: 'GET',
-      uri: this.getBaseURL() + '/blocks/' + hashOrHeight,
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  getLatestBlock: function(cb) {
-    request({
-      method: 'GET',
-      uri: this.getBaseURL() + '/blocks/latest',
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  getBlockOpReturns: function(hashOrHeight, cb) {
-    request({
-      method: 'GET',
-      uri: this.getBaseURL() + '/blocks/' + hashOrHeight + '/op-returns',
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  createNotification: function(args, cb) {
-    request({
-      method: 'POST',
-      uri: this.getNotificationsURL(),
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-      json: args,
-    }, function(err, msg, resp) {
-      cb(err, resp);
-    });
-  },
-  listNotifications: function(cb) {
-    request({
-      method: 'GET',
-      uri: this.getNotificationsURL(),
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth(),
-    }, function(err, msg, resp) {
-      cb(err, JSON.parse(resp));
-    });
-  },
-  deleteNotification: function(id, cb) {
-    request({
-      method: 'DELETE',
-      uri: this.getNotificationsURL() + '/' + id,
-      strictSSL: true,
-      cert: PEM,
-      auth: this.getAuth()
-    }, function(err, msg, resp) {
-      cb(err, resp);
-    });
+function Chain(c) {
+  if(c.keyId == null) {
+    c.keyId = "GUEST-TOKEN";
+  };
+  this.auth = {user: c.keyId, pass: c.keySecret};
+
+  if(c.url == null) {
+    c.url = 'https://api.chain.com';
+  };
+  if(c.apiVersion == null) {
+    c.apiVersion = 'v2';
+  };
+  if(c.blockChain == null) {
+    c.blockChain = 'bitcoin';
+  };
+
+  var baseurl = c.url + '/' + c.apiVersion;
+  this.dataApi = new HttpUtility({
+    url: baseurl + '/' + c.blockChain,
+    auth: this.auth
+  });
+  this.notifApi = new HttpUtility({
+    url: baseurl + '/notifications',
+    auth: this.auth
+  });
+}
+
+Chain.prototype.getAddress = function(address, cb) {
+  this.dataApi.get('/addresses/' + address, cb);
+};
+
+Chain.prototype.getAddresses = function(addresses, cb) {
+  this.getAddress(addresses.join(','), cb);
+};
+
+Chain.prototype.getAddressTransactions = function(address, options, cb) {
+  options = options || {};
+  if (typeof(options) == 'function') {
+      cb = options;
+      options = {};
   }
+  this.dataApi.get('/addresses/' + address + '/transactions', cb);
+};
+
+Chain.prototype.getAddressesTransactions = function(addresses, options, cb) {
+  this.getAddressTransactions(addresses.join(','), options, cb);
+};
+
+Chain.prototype.getAddressUnspents = function(address, cb) {
+  this.dataApi.get('/addresses/' + address + '/unspents', cb);
+};
+
+Chain.prototype.getAddressesUnspents = function(addresses, cb) {
+  this.getAddressUnspents(addresses.join(','), cb);
+};
+
+Chain.prototype.getAddressOpReturns = function(address, cb) {
+  this.dataApi.get('/addresses/' + address + '/op-returns', cb);
+};
+
+Chain.prototype.getTransaction = function(hash, cb) {
+  this.dataApi.get('/transactions/' + hash, cb);
+};
+
+Chain.prototype.getTransactionOpReturn = function(hash, cb) {
+  this.dataApi.get('/transactions/' + hash + '/op-return', cb);
+};
+
+Chain.prototype.sendTransaction = function(hex, cb) {
+  this.dataApi.post('/transactions', {hex: hex}, cb);
+};
+
+Chain.prototype.getBlock = function(hashOrHeight, cb) {
+  this.dataApi.get('/blocks/' + hashOrHeight, cb);
+};
+
+Chain.prototype.getLatestBlock = function(cb) {
+  this.getBlock('latest', cb);
+};
+
+Chain.prototype.getBlockOpReturns = function(hashOrHeight, cb) {
+  this.dataApi.get('/blocks/' + hashOrHeight + '/op-returns', cb);
+};
+
+Chain.prototype.createNotification = function(args, cb) {
+  this.notifApi.post('/', args, cb);
+};
+
+Chain.prototype.listNotifications = function(cb) {
+  this.notifApi.get('/', cb);
+};
+
+Chain.prototype.deleteNotification = function(id, cb) {
+  this.notifApi.delete('/' + id, cb);
 };
