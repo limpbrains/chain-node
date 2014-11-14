@@ -1,4 +1,6 @@
+var bitcoin = require('bitcoinjs-lib');
 var HttpUtility = require('./http-utility');
+var Signer = require('./signer');
 var util = require('util');
 
 module.exports = Chain;
@@ -18,6 +20,12 @@ function Chain(c) {
   if(c.blockChain == null) {
     c.blockChain = 'bitcoin';
   };
+
+  if(c.blockChain == 'bitcoin') {
+    this.blockChainConfig = bitcoin.networks.bitcoin;
+  } else {
+    this.blockChainConfig = bitcoin.networks.testnet;
+  }
 
   var baseurl = c.url + '/' + c.apiVersion;
   this.dataApi = new HttpUtility({
@@ -97,4 +105,49 @@ Chain.prototype.listNotifications = function(cb) {
 
 Chain.prototype.deleteNotification = function(id, cb) {
   this.notifApi.delete('/' + id, cb);
+};
+
+Chain.prototype.signTemplate = function(template, keys) {
+  var keys = Signer.keysFromStrings(keys);
+  return Signer(this.blockChainConfig, template, keys);
+};
+
+Chain.prototype.sendTransaction = function(template, cb) {
+  if (typeof template == 'string' || template instanceof String) {
+    template = {signed_hex: template};
+  }
+  this.dataApi.post('/transactions/send', template, cb);
+};
+
+Chain.prototype.buildTransaction = function(args, cb) {
+  var buildRequest = {
+    inputs: args.inputs,
+    outputs: args.outputs,
+    miner_fee_rate: args.miner_fee_rate,
+    change_address: args.change_address,
+    min_confirmations: args.min_confirmations
+  };
+  this.dataApi.post('/transactions/build', buildRequest, cb);
+};
+
+Chain.prototype.transact = function(args, cb) {
+  var that = this;
+  var blockChainConfig = this.blockChainConfig;
+
+  var keys = Signer.keysFromStrings(args.inputs.map(function(inp) {
+    return inp.private_key
+  }));
+
+  args.inputs = args.inputs.map(function(input) {
+    return {address: input.address};
+  });
+
+  this.buildTransaction(args, function(err, resp) {
+    if(err == null) {
+      var signedTemplate = Signer(this.blockChainConfig, resp, keys);
+      that.sendTransaction(signedTemplate, cb);
+    } else {
+      cb(err, null);
+    }
+  });
 };
