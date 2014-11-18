@@ -20,6 +20,7 @@ function Sign(blockChain, template, keys) {
     for(var j = 0; j < input.signatures.length; j++) {
       var signature = input.signatures[j];
       var key = findKey(signature.address);
+      if(key == undefined) continue;
       var pub = key.pub.toHex();
       var sig = applySignature(signature.hash_to_sign, key);
 
