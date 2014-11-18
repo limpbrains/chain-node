@@ -107,7 +107,10 @@ Chain.prototype.deleteNotification = function(id, cb) {
   this.notifApi.delete('/' + id, cb);
 };
 
-Chain.prototype.signTemplate = function(template, keys, cb) {
+Chain.prototype.signTemplate = function(template, keys) {
+  var keys = keys.map(function(key) {
+    return bitcoin.ECKey.fromWIF(key.private_key);
+  });
   return Signer(this.blockChainConfig, template, keys);
 };
 
