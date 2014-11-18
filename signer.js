@@ -1,3 +1,6 @@
+var BigInteger = require('bigi');
+var bitcoin = require('bitcoinjs-lib');
+
 module.exports = Sign;
 
 function Sign(blockChain, template, keys) {
@@ -29,4 +32,18 @@ function Sign(blockChain, template, keys) {
     }
   }
   return template;
+};
+
+Sign.keysFromStrings = function(kstrs) {
+  var keys = [];
+  kstrs.forEach(function(kstr) {
+    if(/^[A-Z0-9]{64}$/i.test(kstr)) {
+      var big = BigInteger.fromHex(kstr);
+      keys.push(new bitcoin.ECKey(big, true));
+      keys.push(new bitcoin.ECKey(big, false));
+    } else {
+      keys.push(bitcoin.ECKey.fromWIF(kstr));
+    }
+  });
+  return keys;
 };

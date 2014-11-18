@@ -22,7 +22,8 @@
   "homepage": "https://github.com/chain-engineering/chain-node",
   "dependencies": {
     "request": "2.36.0",
-    "bitcoinjs-lib": "1.2.0"
+    "bitcoinjs-lib": "1.2.0",
+    "bigi": "^1.1.0"
   },
   "files": [
     "index.js",

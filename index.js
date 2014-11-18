@@ -108,9 +108,7 @@ Chain.prototype.deleteNotification = function(id, cb) {
 };
 
 Chain.prototype.signTemplate = function(template, keys) {
-  var keys = keys.map(function(key) {
-    return bitcoin.ECKey.fromWIF(key);
-  });
+  var keys = Signer.keysFromStrings(keys);
   return Signer(this.blockChainConfig, template, keys);
 };
 
@@ -133,9 +131,9 @@ Chain.prototype.transact = function(args, cb) {
   var that = this;
   var blockChainConfig = this.blockChainConfig;
 
-  var keys = args.inputs.map(function(input) {
-    return bitcoin.ECKey.fromWIF(input.private_key);
-  });
+  var keys = Signer.keysFromStrings(args.inputs.map(function(inp) {
+    return inp.private_key
+  }));
 
   args.inputs = keys.map(function(key) {
     return {address: key.pub.getAddress(blockChainConfig).toString()}
@@ -143,7 +141,7 @@ Chain.prototype.transact = function(args, cb) {
 
   this.buildTransaction(args, function(err, resp) {
     if(err == null) {
-      var signedTemplate = that.signTemplate(resp, keys);
+      var signedTemplate = Signer(this.blockChainConfig, resp, keys);
       that.sendTransaction(signedTemplate, cb);
     } else {
       cb(err, null);
