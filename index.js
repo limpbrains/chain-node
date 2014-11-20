@@ -113,6 +113,9 @@ Chain.prototype.signTemplate = function(template, keys) {
 };
 
 Chain.prototype.sendTransaction = function(template, cb) {
+  if (typeof template == 'string' || template instanceof String) {
+    template = {signed_hex: template};
+  }
   this.dataApi.post('/transactions/send', template, cb);
 };
 
