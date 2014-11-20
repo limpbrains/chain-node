@@ -138,8 +138,8 @@ Chain.prototype.transact = function(args, cb) {
     return inp.private_key
   }));
 
-  args.inputs = keys.map(function(key) {
-    return {address: key.pub.getAddress(blockChainConfig).toString()}
+  args.inputs = args.inputs.map(function(input) {
+    return {address: input.address};
   });
 
   this.buildTransaction(args, function(err, resp) {
