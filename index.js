@@ -47,12 +47,7 @@ Chain.prototype.getAddresses = function(addresses, cb) {
 };
 
 Chain.prototype.getAddressTransactions = function(address, options, cb) {
-  options = options || {};
-  if (typeof(options) == 'function') {
-      cb = options;
-      options = {};
-  }
-  this.dataApi.get('/addresses/' + address + '/transactions', cb);
+  this.dataApi.get('/addresses/' + address + '/transactions', options, cb);
 };
 
 Chain.prototype.getAddressesTransactions = function(addresses, options, cb) {

@@ -20,7 +20,7 @@ function HttpUtility(c) {
   this.url = c.url;
 }
 
-HttpUtility.prototype.makeRequest = function(method, path, body,  cb) {
+HttpUtility.prototype.makeRequest = function(method, path, body, options, cb) {
   var usingJson = false;
   var r = {
     strictSSL: true,
@@ -33,6 +33,9 @@ HttpUtility.prototype.makeRequest = function(method, path, body,  cb) {
     usingJson = true;
     r['json'] = body;
   }
+  if(options != null) {
+    r['qs'] = options;
+  }
   request(r, function(err, msg, resp) {
     if(usingJson) {
       cb(err, resp);
@@ -43,13 +46,18 @@ HttpUtility.prototype.makeRequest = function(method, path, body,  cb) {
 };
 
 HttpUtility.prototype.post = function(path, body, cb) {
-  this.makeRequest('POST', path, body, cb);
+  this.makeRequest('POST', path, body, null, cb);
 };
 
 HttpUtility.prototype.delete = function(path, cb) {
-  this.makeRequest('DELETE', path, null, cb);
+  this.makeRequest('DELETE', path, null, null, cb);
 };
 
-HttpUtility.prototype.get = function(path, cb) {
-  this.makeRequest('GET', path, null, cb);
+HttpUtility.prototype.get = function(path, options, cb) {
+  if (typeof(options) == 'function') {
+    cb = options;
+    options = null;
+  }
+
+  this.makeRequest('GET', path, null, options, cb);
 }
